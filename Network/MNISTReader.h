@@ -6,7 +6,7 @@
 #define ERROR_OF_OPENING_TRAIN_INPUTS	"Error of opening train inputs"
 #define ERROR_OF_OPENING_TRAIN_LABELS	"Error of opening train labels"
 #define ERROR_OF_OPENING_TEST_INPUTS	"Error of opening test inputs"
-#define ERROR_OF_OPENING_TEST_INPUTS	"Error of opening test labels"
+#define ERROR_OF_OPENING_TEST_LABELS	"Error of opening test labels"
 
 #define TRAIN_INPUTS_INCORRECT_ID		"Error of parsing training images. Number must to be 2051!"
 #define TRAIN_LABELS_INCORRECT_ID		"Error of parsing training labels. Number must to be 2049!"

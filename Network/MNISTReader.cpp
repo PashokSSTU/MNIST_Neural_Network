@@ -51,8 +51,9 @@ Matrix trainReaderInputs(const char* filepath)
 				uint8_t elem = 0;
 
 				f.read((char*)&elem, sizeof(char));
-				elem = ReverseChar(elem);
-				inputs.set_elem(elem, i, j);
+				double tmp = elem;
+				tmp /= 256;
+				inputs.set_elem(tmp, i, j);
 			}
 		}
 
@@ -64,4 +65,135 @@ Matrix trainReaderInputs(const char* filepath)
 	}
 
 	return inputs;
+}
+
+Matrix trainReaderLabels(const char* filepath)
+{
+	Matrix labels = Matrix::Zeros(60000, 1);
+
+	std::ifstream f(filepath, std::ios::in | std::ios::binary);
+	if (f.is_open())
+	{
+		int data = 0;
+
+		f.read((char*)&data, sizeof(int));
+		data = ReverseInt(data);
+		if (data != 2049)
+		{
+			throw TRAIN_LABELS_INCORRECT_ID;
+		}
+
+		f.read((char*)&data, sizeof(int));
+		data = ReverseInt(data);
+		if (data != 60000)
+		{
+			throw IT_ISNT_TRAINING_SET;
+		}
+
+		for (int i = 1; i <= 60000; i++)
+		{
+			uint8_t elem = 0;
+
+			f.read((char*)&elem, sizeof(char));
+			labels.set_elem(elem, i, 1);
+		}
+
+		f.close();
+	}
+	else
+	{
+		throw ERROR_OF_OPENING_TRAIN_LABELS;
+	}
+
+	return labels;
+}
+
+Matrix testReaderInputs(const char* filepath)
+{
+	Matrix inputs = Matrix::Zeros(10000, 784);
+
+	std::ifstream f(filepath, std::ios::in | std::ios::binary);
+	if (f.is_open())
+	{
+		int data = 0;
+
+		f.read((char*)&data, sizeof(int));
+		data = ReverseInt(data);
+		if (data != 2051)
+		{
+			throw TEST_INPUTS_INCORRECT_ID;
+		}
+
+		f.read((char*)&data, sizeof(int));
+		data = ReverseInt(data);
+		if (data != 10000)
+		{
+			throw IT_ISNT_TEST_SET;
+		}
+
+		f.read((char*)&data, sizeof(int));
+		f.read((char*)&data, sizeof(int));
+
+		for (int i = 1; i <= 10000; i++)
+		{
+			for (int j = 1; j <= 784; j++)
+			{
+				uint8_t elem = 0;
+
+				f.read((char*)&elem, sizeof(char));
+				double tmp = elem;
+				tmp /= 256;
+				inputs.set_elem(tmp, i, j);
+			}
+		}
+
+		f.close();
+	}
+	else
+	{
+		throw ERROR_OF_OPENING_TEST_INPUTS;
+	}
+
+	return inputs;
+}
+
+Matrix testReaderLabels(const char* filepath)
+{
+	Matrix labels = Matrix::Zeros(10000, 1);
+
+	std::ifstream f(filepath, std::ios::in | std::ios::binary);
+	if (f.is_open())
+	{
+		int data = 0;
+
+		f.read((char*)&data, sizeof(int));
+		data = ReverseInt(data);
+		if (data != 2049)
+		{
+			throw TEST_LABELS_INCORRECT_ID;
+		}
+
+		f.read((char*)&data, sizeof(int));
+		data = ReverseInt(data);
+		if (data != 10000)
+		{
+			throw IT_ISNT_TEST_SET;
+		}
+
+		for (int i = 1; i <= 10000; i++)
+		{
+			uint8_t elem = 0;
+
+			f.read((char*)&elem, sizeof(char));
+			labels.set_elem(elem, i, 1);
+		}
+
+		f.close();
+	}
+	else
+	{
+		throw ERROR_OF_OPENING_TEST_LABELS;
+	}
+
+	return labels;
 }

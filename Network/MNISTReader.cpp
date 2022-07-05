@@ -41,6 +41,9 @@ Matrix trainReaderInputs(const char* filepath)
 			throw IT_ISNT_TRAINING_SET;
 		}
 
+		f.read((char*)&data, sizeof(int));
+		f.read((char*)&data, sizeof(int));
+
 		for (int i = 1; i <= 60000; i++)
 		{
 			for (int j = 1; j <= 784; j++)

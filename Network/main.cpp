@@ -11,12 +11,12 @@ int main(int argc, char* argv[])
 	{
 		Matrix dataImages = trainReaderInputs("MNIST/train-images.idx3-ubyte");
 
-		Matrix inputs = dataImages.get_row(2);
+		Matrix inputs = dataImages.get_row(1);
 		inputs = Matrix::t(inputs);
 
 		cout << inputs << endl;
 
-		ofstream f_out("MNIST/test_num.txt", ios::out | ios::binary);
+		ofstream f_out("MNIST/test_num.txt", ios::out);
 
 		if (f_out.is_open())
 		{
@@ -25,20 +25,22 @@ int main(int argc, char* argv[])
 				if (inputs.get_elem(i, 1) == 0)
 				{
 					f_out.write("_", sizeof(char));
-					if (i == 28)
+					if (i % 28 == 0)
 					{
-						f_out.write("\n", sizeof(char));
+						f_out.write("\r\n", sizeof(char));
 					}
 				}
 				else
 				{
 					f_out.write("#", sizeof(char));
-					if (i == 28)
+					if (i % 28 == 0)
 					{
-						f_out.write("\n", sizeof(char));
+						f_out.write("\r\n", sizeof(char));
 					}
 				}
 			}
+
+			f_out.close();
 		}
 		else
 		{

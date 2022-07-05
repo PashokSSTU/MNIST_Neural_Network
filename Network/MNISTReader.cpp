@@ -10,6 +10,14 @@ int ReverseInt(int i)
 	return((int)ch1 << 24) + ((int)ch2 << 16) + ((int)ch3 << 8) + ch4;
 }
 
+uint8_t ReverseChar(uint8_t b)
+{
+	b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
+	b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
+	b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
+	return b;
+}
+
 Matrix trainReaderInputs(const char* filepath)
 {
 	Matrix inputs = Matrix::Zeros(60000, 784);
@@ -33,7 +41,17 @@ Matrix trainReaderInputs(const char* filepath)
 			throw IT_ISNT_TRAINING_SET;
 		}
 
+		for (int i = 1; i <= 60000; i++)
+		{
+			for (int j = 1; j <= 784; j++)
+			{
+				uint8_t elem = 0;
 
+				f.read((char*)&elem, sizeof(char));
+				elem = ReverseChar(elem);
+				inputs.set_elem(elem, i, j);
+			}
+		}
 
 		f.close();
 	}

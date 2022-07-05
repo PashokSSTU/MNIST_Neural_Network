@@ -17,6 +17,7 @@
 #define IT_ISNT_TEST_SET				"Error! It isn't test set!"
 
 int ReverseInt(int i);
+uint8_t ReverseChar(uint8_t b);
 
 Matrix trainReaderInputs(const char* filepath);
 Matrix trainReaderLabels(const char* filepath);

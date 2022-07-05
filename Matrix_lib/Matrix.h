@@ -142,6 +142,8 @@ public:
 	matrix_size_t get_size() const;
 	double get_elem(int row, int col) const;
 	void set_elem(double data, int row, int col);
+	Matrix get_row(int row);
+	Matrix get_column(int column);
 
 	friend bool operator==(const Matrix& obj1, const Matrix& obj2);
 	friend bool operator!=(const Matrix& obj1, const Matrix& obj2);
@@ -159,7 +161,7 @@ public:
 	static Matrix Identity(int rows, int columns);
 	static double det(const Matrix& obj);
 	static Matrix t(const Matrix& obj);
-	static int rank(const Matrix& obj);
+	//static int rank(const Matrix& obj);
 	static double A(const Matrix& obj, int row, int column);
 	static Matrix adj(const Matrix& obj);
 	static Matrix inv(const Matrix& obj);

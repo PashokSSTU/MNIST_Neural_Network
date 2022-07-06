@@ -25,4 +25,4 @@ Matrix trainReaderLabels(const char* filepath);
 Matrix testReaderInputs(const char* filepath);
 Matrix testReaderLabels(const char* filepath);
 
-void convertLabelToMatrix(const Matrix& labels, std::unique_ptr<Matrix[]> p);
+void convertLabelToMatrixArray(const Matrix& labels, std::unique_ptr<Matrix[]>* p);

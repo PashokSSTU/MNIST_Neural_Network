@@ -121,12 +121,12 @@ void Network::loadInputs(const Matrix& input)
 	}
 }
 
-void Network::loadDesiredOutput(const Matrix& output)
+void Network::loadDesiredOutput(const std::unique_ptr<Matrix[]>* p, int amounth)
 {
-	desired_outputs = std::make_unique<Matrix[]>(output.get_size().rows);
-	for (int i = 0; i < output.get_size().rows; i++)
+	desired_outputs = std::make_unique<Matrix[]>(amounth);
+	for (int i = 0; i < amounth; i++)
 	{
-		//desired_outputs[i] = 
+		desired_outputs[i] = (*p)[i];
 	}
 }
 
@@ -145,7 +145,7 @@ void Network::backpropogation(int train_number)
 	Matrix outputs = evaluateNetwork();
 	int n = outputs.get_size().rows;
 	Matrix E = Matrix::Identity(n, n);
-	Matrix delta = Matrix::Hadamard_product(cost_derivative(desired_outputs[train_number], outputs), sigmoid_derivative(outputs));
+	Matrix delta = Matrix::Hadamard_product(cost_derivative(desired_outputs[train_number - 1], outputs), sigmoid_derivative(outputs));
 
 	nabla_w = std::make_unique<Matrix[]>(layers - 1);
 	nabla_b = std::make_unique<Matrix[]>(layers - 1);

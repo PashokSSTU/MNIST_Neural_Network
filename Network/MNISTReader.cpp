@@ -198,7 +198,13 @@ Matrix testReaderLabels(const char* filepath)
 	return labels;
 }
 
-void convertLabelToMatrix(const Matrix& labels, std::unique_ptr<Matrix[]> p)
+void convertLabelToMatrixArray(const Matrix& labels, std::unique_ptr<Matrix[]>* p)
 {
-
+	(*p) = std::make_unique<Matrix[]>(labels.get_size().rows);
+	for (int i = 1; i <= labels.get_size().rows; i++)
+	{
+		Matrix tmp(10, 1);
+		tmp.set_elem(1, labels.get_elem(i, 1) + 1, 1);
+		(*p)[i - 1] = tmp;
+	}
 }

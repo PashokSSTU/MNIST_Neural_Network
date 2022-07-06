@@ -30,7 +30,9 @@ public:
 	Matrix cost_derivative(const Matrix& desired, const Matrix& outputs);
 	void SGD();//gradient desgent
 	void backpropogation(int train_number);
-	void loadDesiredOutput(const Matrix& output);
+	void loadDesiredOutput(const std::unique_ptr<Matrix[]>* p, int amounth);
+
+	Matrix test(int i);
 
 private:
 	int layers = 0;

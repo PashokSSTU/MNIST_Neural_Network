@@ -155,7 +155,7 @@ void Network::backpropogation(int train_number)
 	{
 		for (int j = 1; j <= a.get_size().columns; j++)
 		{
-
+			
 		}
 	}
 

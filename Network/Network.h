@@ -32,8 +32,6 @@ public:
 	void backpropogation(int train_number);
 	void loadDesiredOutput(const std::unique_ptr<Matrix[]>* p, int amounth);
 
-	Matrix test(int i);
-
 private:
 	int layers = 0;
 	std::unique_ptr<Matrix> inputs = nullptr;

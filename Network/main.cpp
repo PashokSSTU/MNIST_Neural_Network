@@ -10,14 +10,13 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		std::unique_ptr<Matrix[]> p;
+		//std::unique_ptr<Matrix[]> p;
 		//Matrix inputs = trainReaderInputs("MNIST/train-images.idx3-ubyte");
-		Matrix labels = trainReaderLabels("MNIST/train-labels.idx1-ubyte");
-		Network network({ { 784, 15, 10 } });
+		//Matrix labels = trainReaderLabels("MNIST/train-labels.idx1-ubyte");
+		//Network network({ { 784, 15, 10 } });
 		//network.loadInputs(inputs);
-		convertLabelToMatrixArray(labels, &p);
-		network.loadDesiredOutput(&p, labels.get_size().rows);
-		cout << network.test(2) << endl;
+		//convertLabelToMatrixArray(labels, &p);
+		//network.loadDesiredOutput(&p, labels.get_size().rows);
 	}
 	catch (const char* e)
 	{

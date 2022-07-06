@@ -143,15 +143,21 @@ void Network::SGD()
 void Network::backpropogation(int train_number)
 {
 	Matrix outputs = evaluateNetwork();
-	int n = outputs.get_size().rows;
-	Matrix E = Matrix::Identity(n, n);
 	Matrix delta = Matrix::Hadamard_product(cost_derivative(desired_outputs[train_number - 1], outputs), sigmoid_derivative(outputs));
 
 	nabla_w = std::make_unique<Matrix[]>(layers - 1);
 	nabla_b = std::make_unique<Matrix[]>(layers - 1);
 
 	nabla_b[layers - 1] = delta;
-	nabla_w[layers - 1] = evaluateLayer(layers - 1) * delta;
+	nabla_w[layers - 1].resize(weights[layers - 1].get_size());
+	Matrix a = evaluateLayer(layers - 1);
+	for (int i = 1; i <= a.get_size().rows; i++)
+	{
+		for (int j = 1; j <= a.get_size().columns; j++)
+		{
+
+		}
+	}
 
 	for (int l = 2; l < layers; l++)
 	{

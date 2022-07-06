@@ -144,6 +144,8 @@ public:
 	void set_elem(double data, int row, int col);
 	Matrix get_row(int row);
 	Matrix get_column(int column);
+	void set_row(const Matrix& obj, int row);
+	void set_column(const Matrix& obj, int column);
 
 	friend bool operator==(const Matrix& obj1, const Matrix& obj2);
 	friend bool operator!=(const Matrix& obj1, const Matrix& obj2);

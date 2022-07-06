@@ -142,12 +142,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Hetwork.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MNISTReader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Matrix_lib\Matrix.h" />
     <ClInclude Include="MNISTReader.h" />
+    <ClInclude Include="Network.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

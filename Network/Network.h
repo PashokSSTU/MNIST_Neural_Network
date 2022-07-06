@@ -21,12 +21,15 @@ public:
 	Matrix getLayer_biases(int l);
 
 	Matrix evaluateLayer(int l);
+	Matrix evaluateInputsOfLayer(int l);
 	Matrix evaluateNetwork();
 
 	void loadInputs(const Matrix& input);
 
 	//Train
-	void backpropogation();
+	Matrix cost_derivative(const Matrix& desired, const Matrix& outputs);
+	void SGD();//gradient desgent
+	void backpropogation(int train_number);
 	void loadDesiredOutput(const Matrix& output);
 
 private:
@@ -34,5 +37,9 @@ private:
 	std::unique_ptr<Matrix> inputs = nullptr;
 	std::unique_ptr<Matrix[]> weights = nullptr;
 	std::unique_ptr<Matrix[]> biases = nullptr;
-	std::unique_ptr<Matrix> desired_outputs = nullptr;
+	std::unique_ptr<Matrix[]> desired_outputs = nullptr;
+
+	//Nabla of W and B layers
+	std::unique_ptr<Matrix[]> nabla_w = nullptr;
+	std::unique_ptr<Matrix[]> nabla_b = nullptr;
 };

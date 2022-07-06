@@ -85,6 +85,25 @@ Matrix Network::evaluateLayer(int l)
 	return activation;
 }
 
+Matrix Network::evaluateInputsOfLayer(int l)
+{
+	if (inputs == nullptr)
+	{
+		throw ERROR_INPUTS_DIDNT_LOAD;
+	}
+	Matrix z = (*inputs);
+
+	for (int _l = 2; _l <= l; _l++)
+	{
+		if(_l != l)
+			z = sigmoid((weights[_l - 2] * z) + biases[_l - 2]);
+		else
+			z = (weights[_l - 2] * z) + biases[_l - 2];
+	}
+
+	return z;
+}
+
 Matrix Network::evaluateNetwork()
 {
 	return evaluateLayer(layers);
@@ -104,12 +123,38 @@ void Network::loadInputs(const Matrix& input)
 
 void Network::loadDesiredOutput(const Matrix& output)
 {
-	desired_outputs = std::make_unique<Matrix>(output.get_size());
-	for (int i = 1; i <= output.get_size().rows; i++)
+	desired_outputs = std::make_unique<Matrix[]>(output.get_size().rows);
+	for (int i = 0; i < output.get_size().rows; i++)
 	{
-		for (int j = 1; j <= output.get_size().columns; j++)
-		{
-			desired_outputs->set_elem(output.get_elem(i, j), i, j);
-		}
+		//desired_outputs[i] = 
+	}
+}
+
+Matrix Network::cost_derivative(const Matrix& desired, const Matrix& outputs)
+{
+	return (outputs - desired);
+}
+
+void Network::SGD()
+{
+
+}
+
+void Network::backpropogation(int train_number)
+{
+	Matrix outputs = evaluateNetwork();
+	int n = outputs.get_size().rows;
+	Matrix E = Matrix::Identity(n, n);
+	Matrix delta = Matrix::Hadamard_product(cost_derivative(desired_outputs[train_number], outputs), sigmoid_derivative(outputs));
+
+	nabla_w = std::make_unique<Matrix[]>(layers - 1);
+	nabla_b = std::make_unique<Matrix[]>(layers - 1);
+
+	nabla_b[layers - 1] = delta;
+	nabla_w[layers - 1] = evaluateLayer(layers - 1) * delta;
+
+	for (int l = 2; l < layers; l++)
+	{
+
 	}
 }

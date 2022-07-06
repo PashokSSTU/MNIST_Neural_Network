@@ -1,6 +1,7 @@
 #pragma once
 #include "Matrix.h"
 #include <fstream>
+#include <memory>
 
 // Exceptions
 #define ERROR_OF_OPENING_TRAIN_INPUTS	"Error of opening train inputs"
@@ -23,3 +24,5 @@ Matrix trainReaderInputs(const char* filepath);
 Matrix trainReaderLabels(const char* filepath);
 Matrix testReaderInputs(const char* filepath);
 Matrix testReaderLabels(const char* filepath);
+
+void convertLabelToMatrix(const Matrix& labels, std::unique_ptr<Matrix[]> p);

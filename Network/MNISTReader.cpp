@@ -197,3 +197,8 @@ Matrix testReaderLabels(const char* filepath)
 
 	return labels;
 }
+
+void convertLabelToMatrix(const Matrix& labels, std::unique_ptr<Matrix[]> p)
+{
+
+}

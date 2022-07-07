@@ -28,7 +28,7 @@ public:
 
 	//Train
 	Matrix cost_derivative(const Matrix& desired, const Matrix& outputs);
-	void SGD();//gradient desgent
+	void SGD(double eta, int epohs);//gradient desgent
 	void backpropogation(int train_number);
 	void loadDesiredOutput(const std::unique_ptr<Matrix[]>* p, int amounth);
 

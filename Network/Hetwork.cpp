@@ -75,6 +75,12 @@ Matrix Network::evaluateLayer(int l)
 	{
 		throw ERROR_INPUTS_DIDNT_LOAD;
 	}
+
+	if (l == 1)
+	{
+		return (*inputs);
+	}
+
 	Matrix activation = (*inputs);
 
 	for (int _l = 2; _l <= l; _l++)
@@ -135,7 +141,7 @@ Matrix Network::cost_derivative(const Matrix& desired, const Matrix& outputs)
 	return (outputs - desired);
 }
 
-void Network::SGD()
+void Network::SGD(double eta, int epohs)
 {
 
 }
@@ -157,6 +163,8 @@ void Network::backpropogation(int train_number)
 	for (int l = layers - 1; l >= 2; l--)
 	{
 		z = evaluateInputsOfLayer(l);
-		delta = Matrix::Hadamard_product(Matrix::t(weights[l - 1]) * delta, sigmoid_derivative(z));
+		delta = Matrix::Hadamard_product(weights[l - 1] * delta, sigmoid_derivative(z));
+		nabla_b[l - 2] = delta;
+		nabla_w[l - 2] = evaluateLayer(l - 1) * Matrix::t(delta);
 	}
 }

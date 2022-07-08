@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 #include <ctime>
 #include <memory>
@@ -37,6 +38,9 @@ public:
 	void training_shuffle();
 	void get_mini_batch(int mini_batch_size);
 	void update_mini_batch(double eta);
+
+	void saveNetworkWeightsAndBiases(const char* filepath);
+	void readNetworkWeightsAndBiases(const char* filepath);
 
 private:
 	int layers = 0;

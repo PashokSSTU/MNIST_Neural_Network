@@ -200,6 +200,35 @@ void Network::update_mini_batch(double eta)
 	}
 }
 
+void Network::saveNetworkWeightsAndBiases(const char* filepath)
+{
+	std::ofstream f(filepath, std::ios::out | std::ios::binary);
+	if (f.is_open())
+	{
+		for (int i = 0; i < layers - 1; i++)
+		{
+			f.write((const char*)weights[i].get_size().rows, sizeof(size_t));
+		}
+	}
+	else
+	{
+		throw "Error of creating network's data save file!";
+	}
+}
+
+void Network::readNetworkWeightsAndBiases(const char* filepath)
+{
+	std::ofstream f(filepath, std::ios::in | std::ios::binary);
+	if (f.is_open())
+	{
+
+	}
+	else
+	{
+		throw "Error: \"Network's data file didn't fing!\"";
+	}
+}
+
 Matrix Network::cost_derivative(const Matrix& desired, const Matrix& outputs)
 {
 	return (outputs - desired);

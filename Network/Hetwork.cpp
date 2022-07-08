@@ -136,14 +136,52 @@ void Network::loadDesiredOutput(const std::unique_ptr<Matrix[]>* p, int amounth)
 	}
 }
 
+void Network::training_shuffle()
+{
+	srand(time(nullptr));
+
+	for (int i = 60000 - 1; i >= 1; i--)
+	{
+		int j = rand() % (i + 1);
+
+		Matrix tmp_lbl = desired_outputs[j];
+		desired_outputs[j] = desired_outputs[i];
+		desired_outputs[i] = tmp_lbl;
+
+		Matrix tmp_inp = inputs->get_row(j + 1);
+		inputs->set_row(inputs->get_row(i + 1), j + 1);
+		inputs->set_row(tmp_inp, i + 1);
+	}
+}
+
+
+void Network::get_mini_batch(int mini_batch_size)
+{
+	mini_batches.clear();
+
+	for (int i = 0; i < mini_batch_size; i++)
+	{
+		mini_batch_elem.image = Matrix::t(inputs->get_row(i + 1));
+		mini_batch_elem.label = desired_outputs[i];
+
+		mini_batches.push_back(mini_batch_elem);
+	}
+}
+
 Matrix Network::cost_derivative(const Matrix& desired, const Matrix& outputs)
 {
 	return (outputs - desired);
 }
 
-void Network::SGD(double eta, int epohs)
+void Network::SGD(double eta, int mini_batch_size, int epohs)
 {
-
+	for (int ep = 0; ep < epohs; ep++)
+	{
+		for (int inp = 1; inp <= inputs->get_size().rows; inp++)
+		{
+			backpropogation(inp); // calculating of nablas for weights and biases
+		}
+	}
 }
 
 void Network::backpropogation(int train_number)

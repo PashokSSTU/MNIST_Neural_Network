@@ -36,6 +36,7 @@ public:
 	void loadDesiredOutput(const std::unique_ptr<Matrix[]>* p, int amounth);
 	void training_shuffle();
 	void get_mini_batch(int mini_batch_size);
+	void update_mini_batch(double eta);
 
 private:
 	int layers = 0;
@@ -48,8 +49,9 @@ private:
 	// mini_batches variables
 	struct _mini_batch_elem
 	{
-		Matrix image;
-		Matrix label;
+		Matrix inp;
+		Matrix out;
+		int train_number;
 	} mini_batch_elem;
 
 	std::list<_mini_batch_elem> mini_batches;
@@ -57,4 +59,7 @@ private:
 	//Nabla of W and B layers
 	std::unique_ptr<Matrix[]> nabla_w = nullptr;
 	std::unique_ptr<Matrix[]> nabla_b = nullptr;
+
+	std::unique_ptr<Matrix[]> dnw = nullptr;
+	std::unique_ptr<Matrix[]> dnb = nullptr;
 };

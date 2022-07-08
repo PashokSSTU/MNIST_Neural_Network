@@ -161,10 +161,42 @@ void Network::get_mini_batch(int mini_batch_size)
 
 	for (int i = 0; i < mini_batch_size; i++)
 	{
-		mini_batch_elem.image = Matrix::t(inputs->get_row(i + 1));
-		mini_batch_elem.label = desired_outputs[i];
+		mini_batch_elem.inp = Matrix::t(inputs->get_row(i + 1));
+		mini_batch_elem.out = desired_outputs[i];
 
 		mini_batches.push_back(mini_batch_elem);
+	}
+}
+
+void Network::update_mini_batch(double eta)
+{
+	int train_number = 0;
+	dnw = std::make_unique<Matrix[]>(layers - 1);
+	dnb = std::make_unique<Matrix[]>(layers - 1);
+	
+	for (int l = layers - 1; l >= 2; l--)
+	{
+		dnw[l - 2] = Matrix::Zeros(weights[l].get_size().rows, weights[l - 2].get_size().columns);
+		dnb[l - 2] = Matrix::Zeros(biases[l].get_size().rows, biases[l - 2].get_size().columns);
+	}
+
+	// Calculating delta's
+	for (auto it = mini_batches.begin(); it != mini_batches.end(); it++)
+	{
+		train_number++;
+		backpropogation(train_number);
+		for (int l = layers - 1; l >= 2; l--)
+		{
+			dnw[l - 2] += nabla_w[l - 2];
+			dnb[l - 2] += nabla_b[l - 2];
+		}
+	}
+
+	// Update w and b
+	for (int l = layers - 1; l >= 2; l--)
+	{
+		weights[l - 2] = (eta / mini_batches.size()) * (dnw[l - 2]);
+		biases[l - 2] = (eta / mini_batches.size()) * (dnb[l - 2]);
 	}
 }
 
@@ -175,13 +207,13 @@ Matrix Network::cost_derivative(const Matrix& desired, const Matrix& outputs)
 
 void Network::SGD(double eta, int mini_batch_size, int epohs)
 {
-	for (int ep = 0; ep < epohs; ep++)
-	{
-		for (int inp = 1; inp <= inputs->get_size().rows; inp++)
-		{
-			backpropogation(inp); // calculating of nablas for weights and biases
-		}
-	}
+	//for (int ep = 0; ep < epohs; ep++)
+	//{
+	//	for (int inp = 1; inp <= inputs->get_size().rows; inp++)
+	//	{
+	//		backpropogation(inp); // calculating of nablas for weights and biases
+	//	}
+	//}
 }
 
 void Network::backpropogation(int train_number)

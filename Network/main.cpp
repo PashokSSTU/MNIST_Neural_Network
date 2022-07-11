@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 		//std::unique_ptr<Matrix[]> p;
 		//Matrix inputs = trainReaderInputs("MNIST/train-images.idx3-ubyte");
 		//Matrix labels = trainReaderLabels("MNIST/train-labels.idx1-ubyte");
-		//Network network({ { 784, 15, 10 } });
+		Network network({ { 784, 15, 10 } });
 		//network.loadInputs(inputs);
 		//convertLabelToMatrixArray(labels, &p);
 		//network.loadDesiredOutput(&p, labels.get_size().rows);

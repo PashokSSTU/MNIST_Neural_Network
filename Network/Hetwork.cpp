@@ -205,10 +205,44 @@ void Network::saveNetworkWeightsAndBiases(const char* filepath)
 	std::ofstream f(filepath, std::ios::out | std::ios::binary);
 	if (f.is_open())
 	{
-		for (int i = 0; i < layers - 1; i++)
+		for (int l = 0; l < layers - 1; l++)
 		{
-			f.write((const char*)weights[i].get_size().rows, sizeof(size_t));
+			double tmp;
+			tmp = weights[l].get_size().rows;
+			f.write(reinterpret_cast<char*>(&tmp), sizeof(double));
+			tmp = weights[l].get_size().columns;
+			f.write(reinterpret_cast<char*>(&tmp), sizeof(double));
+
+			for (int i = 1; i <= weights[l].get_size().rows; i++)
+			{
+				for (int j = 1; j <= weights[l].get_size().columns; j++)
+				{
+					tmp = weights[l].get_elem(i, j);
+					f.write(reinterpret_cast<char*>(&tmp), sizeof(double));
+				}
+			}
 		}
+
+		for (int l = 0; l < layers - 1; l++)
+		{
+			double tmp;
+			tmp = biases[l].get_size().rows;
+			f.write(reinterpret_cast<char*>(&tmp), sizeof(double));
+			tmp = biases[l].get_size().columns;
+			f.write(reinterpret_cast<char*>(&tmp), sizeof(double));
+
+			for (int i = 1; i <= biases[l].get_size().rows; i++)
+			{
+				for (int j = 1; j <= biases[l].get_size().columns; j++)
+				{
+					tmp = biases[l].get_elem(i, j);
+					f.write(reinterpret_cast<char*>(&tmp), sizeof(double));
+				}
+			}
+
+		}
+
+		f.close();
 	}
 	else
 	{
@@ -218,10 +252,48 @@ void Network::saveNetworkWeightsAndBiases(const char* filepath)
 
 void Network::readNetworkWeightsAndBiases(const char* filepath)
 {
-	std::ofstream f(filepath, std::ios::in | std::ios::binary);
+	std::ifstream f(filepath, std::ios::in | std::ios::binary);
 	if (f.is_open())
 	{
+		for (int l = 0; l < layers - 1; l++)
+		{
+			double tmp;
+			Matrix m_tmp;
+			f.read((char*)&tmp, sizeof(double));
+			int row = tmp;
+			f.read((char*)&tmp, sizeof(double));
+			int column = tmp;
+			m_tmp.resize(row, column);
+			for (int i = 1; i <= weights[l].get_size().rows; i++)
+			{
+				for (int j = 1; j <= weights[l].get_size().columns; j++)
+				{
+					f.read((char*)&tmp, sizeof(double));
+					m_tmp.set_elem(tmp, i, j);
+				}
+			}
+		}
 
+		for (int l = 0; l < layers - 1; l++)
+		{
+			double tmp;
+			Matrix m_tmp;
+			f.read((char*)&tmp, sizeof(double));
+			int row = tmp;
+			f.read((char*)&tmp, sizeof(double));
+			int column = tmp;
+			m_tmp.resize(row, column);
+			for (int i = 1; i <= biases[l].get_size().rows; i++)
+			{
+				for (int j = 1; j <= biases[l].get_size().columns; j++)
+				{
+					f.read((char*)&tmp, sizeof(double));
+					m_tmp.set_elem(tmp, i, j);
+				}
+			}
+		}
+
+		f.close();
 	}
 	else
 	{

@@ -6,6 +6,7 @@
 #include <memory>
 #include <list>
 #include <cmath>
+#include <random>
 #include "Matrix.h"
 
 #define ERROR_INPUTS_DIDNT_LOAD "Error! Inputs for network didn't load!"
@@ -24,9 +25,9 @@ public:
 	Matrix getLayer_weights(int l);
 	Matrix getLayer_biases(int l);
 
-	Matrix evaluateLayer(int l);
-	Matrix evaluateInputsOfLayer(int l);
-	Matrix evaluateNetwork();
+	Matrix evaluateLayer(int l, int train_number = 0);
+	Matrix evaluateInputsOfLayer(int l, int train_number = 0);
+	Matrix evaluateNetwork(int train_number = 0);
 
 	void loadInputs(const Matrix& input);
 
@@ -36,7 +37,7 @@ public:
 	void backpropogation(int train_number);
 	void loadDesiredOutput(const std::unique_ptr<Matrix[]>* p, int amounth);
 	void training_shuffle();
-	void get_mini_batch(int mini_batch_size);
+	void get_mini_batch(int& start_batch_number, int mini_batch_size);
 	void update_mini_batch(double eta);
 
 	void saveNetworkWeightsAndBiases(const char* filepath);

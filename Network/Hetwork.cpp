@@ -236,7 +236,7 @@ void Network::update_mini_batch(double eta)
 	// Update w and b
 	for (int l = layers; l >= 2; l--)
 	{
-		weights[l - 2] = (eta / mini_batches.size()) * (dnw[l - 2]);
+		weights[l - 2] = Matrix::t((eta / mini_batches.size()) * (dnw[l - 2]));
 		biases[l - 2] = (eta / mini_batches.size()) * (dnb[l - 2]);
 	}
 }
@@ -313,6 +313,7 @@ void Network::readNetworkWeightsAndBiases(const char* filepath)
 					m_tmp.set_elem(tmp, i, j);
 				}
 			}
+			weights[l] = m_tmp;
 		}
 
 		for (int l = 0; l < layers - 1; l++)
@@ -332,6 +333,7 @@ void Network::readNetworkWeightsAndBiases(const char* filepath)
 					m_tmp.set_elem(tmp, i, j);
 				}
 			}
+			biases[l] = m_tmp;
 		}
 
 		f.close();
@@ -353,8 +355,10 @@ void Network::SGD(double eta, int mini_batch_size, int epohs)
 	int start_batch = 0;
 	for (int ep = 0; ep < epohs; ep++)
 	{
+		std::cout << "Epoch " << ep + 1 << " started" << std::endl;
 		get_mini_batch(start_batch, mini_batch_size);
-		update_mini_batch(eta);
+ 		update_mini_batch(eta);
+		std::cout << "Epoch " << ep + 1 << " ended" << std::endl;
 	}
 
 	saveNetworkWeightsAndBiases("network_data.txt");

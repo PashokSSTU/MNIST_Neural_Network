@@ -82,12 +82,12 @@ Matrix Network::sigmoid_derivative(const Matrix& matrix)
 
 Matrix Network::getLayer_weights(int l)
 {
-	return weights[l - 1];
+	return weights[l - 2];
 }
 
 Matrix Network::getLayer_biases(int l)
 {
-	return biases[l - 1];
+	return biases[l - 2];
 }
 
 Matrix Network::evaluateLayer(int l, int train_number)
@@ -136,10 +136,14 @@ Matrix Network::evaluateInputsOfLayer(int l, int train_number)
 
 	for (int _l = 2; _l <= l; _l++)
 	{
-		if(_l != l)
-			z = sigmoid((weights[_l - 2] * z) + biases[_l - 2]);
-		else
+		if (_l == l)
+		{
 			z = (weights[_l - 2] * z) + biases[_l - 2];
+		}
+		else
+		{
+			z = sigmoid((weights[_l - 2] * z) + biases[_l - 2]);
+		}
 	}
 
 	return z;
@@ -175,7 +179,7 @@ void Network::training_shuffle()
 {
 	srand(time(nullptr));
 
-	for (int i = 60000 - 1; i >= 1; i--)
+	for (int i = inputs->get_size().rows - 1; i >= 1; i--)
 	{
 		int j = rand() % (i + 1);
 
@@ -196,6 +200,12 @@ void Network::get_mini_batch(int& start_batch_number, int mini_batch_size)
 
 	for (int i = start_batch_number; i < start_batch_number + mini_batch_size; i++)
 	{
+		if (i >= inputs->get_size().rows)
+		{
+			i -= start_batch_number;
+			start_batch_number = 0;
+		}
+
 		mini_batch_elem.inp = Matrix::t(inputs->get_row(i + 1));
 		mini_batch_elem.out = desired_outputs[i];
 
@@ -213,11 +223,8 @@ void Network::update_mini_batch(double eta)
 	
 	for (int l = layers; l >= 2; l--)
 	{
-		//dnw[l - 2] = Matrix::Zeros(weights[l].get_size().rows, weights[l - 2].get_size().columns);
-		//dnb[l - 2] = Matrix::Zeros(biases[l].get_size().rows, biases[l - 2].get_size().columns);
 		dnw[l - 2].resize(weights[l - 2].get_size());
 		dnb[l - 2].resize(biases[l - 2].get_size());
-		dnw[l - 2] = Matrix::t(dnw[l - 2]);
 
 	}
 
@@ -236,8 +243,8 @@ void Network::update_mini_batch(double eta)
 	// Update w and b
 	for (int l = layers; l >= 2; l--)
 	{
-		weights[l - 2] = Matrix::t((eta / mini_batches.size()) * (dnw[l - 2]));
-		biases[l - 2] = (eta / mini_batches.size()) * (dnb[l - 2]);
+		weights[l - 2] -= (eta / mini_batches.size()) * (dnw[l - 2]);
+		biases[l - 2] -= (eta / mini_batches.size()) * (dnb[l - 2]);
 	}
 }
 
@@ -376,13 +383,13 @@ void Network::backpropogation(int train_number)
 	nabla_b[layers - 2] = delta;
 	nabla_w[layers - 2].resize(weights[layers - 2].get_size());
 	Matrix a = evaluateLayer(layers - 1, train_number);
-	nabla_w[layers - 2] = a * Matrix::t(delta);
+	nabla_w[layers - 2] = delta * Matrix::t(a);
 
 	for (int l = layers - 1; l >= 2; l--)
 	{
 		z = evaluateInputsOfLayer(l, train_number);
 		delta = Matrix::Hadamard_product(Matrix::t(weights[l - 1]) * delta, sigmoid_derivative(z));
 		nabla_b[l - 2] = delta;
-		nabla_w[l - 2] = evaluateLayer(l - 1, train_number) * Matrix::t(delta);
+		nabla_w[l - 2] = delta * Matrix::t(evaluateLayer(l - 1, train_number));
 	}
 }

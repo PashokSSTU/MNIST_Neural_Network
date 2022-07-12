@@ -5,28 +5,78 @@
 
 using namespace std;
 
-#define TRAIN 1
+#define TRAIN 0
 
 
 int main(int argc, char* argv[])
 {
 	try
 	{
+		
+		Network network({ { 2, 5, 1 } });
+
 #if TRAIN
 		std::unique_ptr<Matrix[]> p;
-		Matrix inputs = trainReaderInputs("MNIST/train-images.idx3-ubyte");
-		//Matrix labels = trainReaderLabels("MNIST/train-labels.idx1-ubyte");
-		Network network({ { 784, 15, 10 } });
-		//network.loadInputs(inputs);
-		//convertLabelToMatrixArray(labels, &p);
-		//network.loadDesiredOutput(&p, labels.get_size().rows);
-		//network.SGD(0.05, 1000, 60);
 
-		inputs = Matrix::t(inputs.get_row(1));
+		Matrix inputs = {
+			{0, 0},
+			{0, 1},
+			{1, 0},
+			{1, 1}
+		};
+
+		p = make_unique<Matrix[]>(inputs.get_size().rows);
+
+		p[0] = { {0} };
+		p[1] = { {0} };
+		p[2] = { {1} };
+		p[3] = { {1} };
+
+
 		network.loadInputs(inputs);
-//#else
+		network.loadDesiredOutput(&p, inputs.get_size().rows);
+		network.SGD(0.05, 4, 100000);
+
+#else
+		
 		network.readNetworkWeightsAndBiases("network_data.txt");
-		cout << network.evaluateNetwork() << endl;
+
+		Matrix inputs =
+		{
+			{0},
+			{0}
+		};
+
+		network.loadInputs(inputs);
+		cout << "Input: " << endl << inputs << endl << "evaluate: " << network.evaluateNetwork() << endl << endl;
+
+		inputs =
+		{
+			{0},
+			{1}
+		};
+
+		network.loadInputs(inputs);
+		cout << "Input: " << endl << inputs << endl << "evaluate: " << network.evaluateNetwork() << endl << endl;
+
+		inputs =
+		{
+			{1},
+			{0}
+		};
+
+		network.loadInputs(inputs);
+		cout << "Input: " << endl << inputs << endl << "evaluate: " << network.evaluateNetwork() << endl << endl;
+
+		inputs =
+		{
+			{1},
+			{1}
+		};
+
+		network.loadInputs(inputs);
+		cout << "Input: " << endl << inputs << endl << "evaluate: " << network.evaluateNetwork() << endl << endl;
+
 #endif
 
 	}

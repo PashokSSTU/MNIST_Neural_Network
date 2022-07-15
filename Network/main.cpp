@@ -5,38 +5,34 @@
 
 using namespace std;
 
-#define TRAIN 0
+#define TRAIN 1
+#define ADDITIONAL_TRAINING 0
 
 
 int main(int argc, char* argv[])
 {
 	try
 	{
-		
-		Network network({ { 2, 5, 1 } });
+		Matrix layers = { {2, 1} };
+		Network network(layers);
 
 #if TRAIN
-		std::unique_ptr<Matrix[]> p;
 
-		Matrix inputs = {
-			{0, 0},
-			{0, 1},
-			{1, 0},
-			{1, 1}
-		};
+#if ADDITIONAL_TRAINING
+		network.readNetworkWeightsAndBiases("network_data.txt");
+#endif
+		std::unique_ptr<Matrix[]> arr_labels;
+		std::unique_ptr<Matrix[]> arr_test_labels;
 
-		p = make_unique<Matrix[]>(inputs.get_size().rows);
+		Matrix inputs = trainReaderInputs("MNIST/t10k-images.idx3-ubyte");
+		Matrix labels = trainReaderLabels("MNIST/t10k-labels.idx1-ubyte");
+		Matrix test_inputs = testReaderInputs("MNIST/train-images.idx3-ubyte");
+		Matrix test_labels = testReaderLabels("MNIST/train-labels.idx1-ubyte");
 
-		p[0] = { {0} };
-		p[1] = { {0} };
-		p[2] = { {1} };
-		p[3] = { {1} };
+		convertLabelToMatrixArray(labels, &arr_labels);
+		convertLabelToMatrixArray(test_labels, &arr_test_labels);
 
-
-		network.loadInputs(inputs);
-		network.loadDesiredOutput(&p, inputs.get_size().rows);
-		network.SGD(0.05, 4, 100000);
-
+		network.loadTrainingInputs(inputs);
 #else
 		
 		network.readNetworkWeightsAndBiases("network_data.txt");

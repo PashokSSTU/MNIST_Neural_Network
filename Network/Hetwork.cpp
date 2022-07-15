@@ -90,7 +90,7 @@ Matrix Network::getLayer_biases(int l)
 	return biases[l - 2];
 }
 
-Matrix Network::evaluateLayer(int l, int train_number)
+Matrix Network::evaluateLayer(int l, int train_number, bool test)
 {
 	if (inputs == nullptr)
 	{
@@ -154,7 +154,7 @@ Matrix Network::evaluateNetwork(int train_number)
 	return evaluateLayer(layers, train_number);
 }
 
-void Network::loadInputs(const Matrix& input)
+void Network::loadTrainingInputs(const Matrix& input)
 {
 	inputs = std::make_unique<Matrix>(input.get_size());
 	for (int i = 1; i <= input.get_size().rows; i++)
@@ -166,12 +166,33 @@ void Network::loadInputs(const Matrix& input)
 	}
 }
 
-void Network::loadDesiredOutput(const std::unique_ptr<Matrix[]>* p, int amounth)
+void Network::loadTestInputs(const Matrix& input)
+{
+	test_inputs = std::make_unique<Matrix>(input.get_size());
+	for (int i = 1; i <= input.get_size().rows; i++)
+	{
+		for (int j = 1; j <= input.get_size().columns; j++)
+		{
+			test_inputs->set_elem(input.get_elem(i, j), i, j);
+		}
+	}
+}
+
+void Network::loadDesiredTrainingOutputs(const std::unique_ptr<Matrix[]>* p, int amounth)
 {
 	desired_outputs = std::make_unique<Matrix[]>(amounth);
 	for (int i = 0; i < amounth; i++)
 	{
 		desired_outputs[i] = (*p)[i];
+	}
+}
+
+void Network::loadDesiredTestOutputs(const std::unique_ptr<Matrix[]>* p, int amounth)
+{
+	desired_test_outputs = std::make_unique<Matrix[]>(amounth);
+	for (int i = 0; i < amounth; i++)
+	{
+		desired_test_outputs[i] = (*p)[i];
 	}
 }
 

@@ -25,17 +25,19 @@ public:
 	Matrix getLayer_weights(int l);
 	Matrix getLayer_biases(int l);
 
-	Matrix evaluateLayer(int l, int train_number = 0);
+	Matrix evaluateLayer(int l, int train_number = 0, bool test = false);
 	Matrix evaluateInputsOfLayer(int l, int train_number = 0);
 	Matrix evaluateNetwork(int train_number = 0);
 
-	void loadInputs(const Matrix& input);
+	void loadTrainingInputs(const Matrix& input);
+	void loadTestInputs(const Matrix& input);
+	void loadDesiredTrainingOutputs(const std::unique_ptr<Matrix[]>* p, int amounth);
+	void loadDesiredTestOutputs(const std::unique_ptr<Matrix[]>* p, int amounth);
 
 	//Train
 	Matrix cost_derivative(const Matrix& desired, const Matrix& outputs);
 	void SGD(double eta, int mini_batch_size, int epohs);//gradient desgent
 	void backpropogation(int train_number);
-	void loadDesiredOutput(const std::unique_ptr<Matrix[]>* p, int amounth);
 	void training_shuffle();
 	void get_mini_batch(int& start_batch_number, int mini_batch_size);
 	void update_mini_batch(double eta);
@@ -47,9 +49,11 @@ private:
 	int layers = 0;
 
 	std::unique_ptr<Matrix> inputs = nullptr;
+	std::unique_ptr<Matrix> test_inputs = nullptr;
 	std::unique_ptr<Matrix[]> weights = nullptr;
 	std::unique_ptr<Matrix[]> biases = nullptr;
 	std::unique_ptr<Matrix[]> desired_outputs = nullptr;
+	std::unique_ptr<Matrix[]> desired_test_outputs = nullptr;
 
 	// mini_batches variables
 	struct _mini_batch_elem

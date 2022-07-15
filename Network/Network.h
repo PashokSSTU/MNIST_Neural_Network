@@ -7,6 +7,7 @@
 #include <list>
 #include <cmath>
 #include <random>
+#include <cfloat>
 #include "Matrix.h"
 
 #define ERROR_INPUTS_DIDNT_LOAD "Error! Inputs for network didn't load!"
@@ -27,7 +28,8 @@ public:
 
 	Matrix evaluateLayer(int l, int train_number = 0, bool test = false);
 	Matrix evaluateInputsOfLayer(int l, int train_number = 0);
-	Matrix evaluateNetwork(int train_number = 0);
+	Matrix evaluateNetworkOutput(int train_number = 0, bool test = false);
+	Matrix evaluateNetwork(int train_number = 0, bool test = false);
 
 	void loadTrainingInputs(const Matrix& input);
 	void loadTestInputs(const Matrix& input);
@@ -36,7 +38,7 @@ public:
 
 	//Train
 	Matrix cost_derivative(const Matrix& desired, const Matrix& outputs);
-	void SGD(double eta, int mini_batch_size, int epohs);//gradient desgent
+	void SGD(double eta, int mini_batch_size, int epohs, bool test = false);//gradient desgent
 	void backpropogation(int train_number);
 	void training_shuffle();
 	void get_mini_batch(int& start_batch_number, int mini_batch_size);

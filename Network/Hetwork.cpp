@@ -99,18 +99,38 @@ Matrix Network::evaluateLayer(int l, int train_number, bool test)
 
 	if (l == 1)
 	{
-		if (train_number)
-			return Matrix::t(inputs->get_row(train_number));
+		if (test)
+		{
+			if (train_number)
+				return Matrix::t(test_inputs->get_row(train_number));
+			else
+				return (*test_inputs);
+		}
 		else
-			return (*inputs);
+		{
+			if (train_number)
+				return Matrix::t(inputs->get_row(train_number));
+			else
+				return (*inputs);
+		}
 	}
 
 	Matrix activation;
 
-	if (train_number)
-		activation = Matrix::t(inputs->get_row(train_number));
+	if (test)
+	{
+		if (train_number)
+			activation = Matrix::t(inputs->get_row(train_number));
+		else
+			activation = (*inputs);
+	}
 	else
-		activation = (*inputs);
+	{
+		if (train_number)
+			activation = Matrix::t(test_inputs->get_row(train_number));
+		else
+			activation = (*test_inputs);
+	}
 
 	for (int _l = 2; _l <= l; _l++)
 	{
@@ -149,9 +169,36 @@ Matrix Network::evaluateInputsOfLayer(int l, int train_number)
 	return z;
 }
 
-Matrix Network::evaluateNetwork(int train_number)
+Matrix Network::evaluateNetworkOutput(int train_number, bool test)
 {
-	return evaluateLayer(layers, train_number);
+	return evaluateLayer(layers, train_number, test);
+}
+
+Matrix Network::evaluateNetwork(int train_number, bool test)
+{
+	Matrix result = evaluateNetworkOutput(train_number);
+
+	double max = DBL_MIN;
+	int row = 0;
+	int column = 0;
+
+	for (int i = 1; i <= result.get_size().rows; i++)
+	{
+		for (int j = 1; j <= result.get_size().columns; j++)
+		{
+			if ((result.get_elem(i, j) > max) || (result.get_elem(i, j) >= max - 0.00000001 && result.get_elem(i, j) <= max - 0.00000001))
+			{
+				row = i;
+				column = j;
+				max = result.get_elem(i, j);
+			}
+		}
+	}
+
+	result = Matrix::Convert::ToZeros(result);
+	result.set_elem(1, row, column);
+
+	return result;
 }
 
 void Network::loadTrainingInputs(const Matrix& input)
@@ -377,16 +424,30 @@ Matrix Network::cost_derivative(const Matrix& desired, const Matrix& outputs)
 	return (outputs - desired);
 }
 
-void Network::SGD(double eta, int mini_batch_size, int epohs)
+void Network::SGD(double eta, int mini_batch_size, int epohs, bool test)
 {
 	training_shuffle();
 	int start_batch = 0;
 	for (int ep = 0; ep < epohs; ep++)
 	{
-		std::cout << "Epoch " << ep + 1 << " started" << std::endl;
 		get_mini_batch(start_batch, mini_batch_size);
  		update_mini_batch(eta);
-		std::cout << "Epoch " << ep + 1 << " ended" << std::endl;
+
+		if (test)
+		{
+			int count = 0;
+			int amounth = test_inputs->get_size().rows;
+
+			for (int i = 1; i <= test_inputs->get_size().rows; i++)
+			{
+				if (desired_test_outputs[i - 1] == evaluateNetwork(i))
+				{
+					count++;
+				}
+			}
+
+			std::cout << "Ep " << ep + 1 << ": " << count << " / " << amounth << std::endl;
+		}
 	}
 
 	saveNetworkWeightsAndBiases("network_data.txt");
@@ -394,7 +455,7 @@ void Network::SGD(double eta, int mini_batch_size, int epohs)
 
 void Network::backpropogation(int train_number)
 {
-	Matrix outputs = evaluateNetwork(train_number);
+	Matrix outputs = evaluateNetworkOutput(train_number);
 	Matrix z = evaluateInputsOfLayer(layers, train_number);
 	Matrix delta = Matrix::Hadamard_product(cost_derivative(desired_outputs[train_number - 1], outputs), sigmoid_derivative(z));
 

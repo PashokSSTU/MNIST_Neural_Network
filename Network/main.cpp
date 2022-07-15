@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		Matrix layers = { {2, 1} };
+		Matrix layers = { {784, 15, 10} };
 		Network network(layers);
 
 #if TRAIN
@@ -24,15 +24,20 @@ int main(int argc, char* argv[])
 		std::unique_ptr<Matrix[]> arr_labels;
 		std::unique_ptr<Matrix[]> arr_test_labels;
 
-		Matrix inputs = trainReaderInputs("MNIST/t10k-images.idx3-ubyte");
-		Matrix labels = trainReaderLabels("MNIST/t10k-labels.idx1-ubyte");
-		Matrix test_inputs = testReaderInputs("MNIST/train-images.idx3-ubyte");
-		Matrix test_labels = testReaderLabels("MNIST/train-labels.idx1-ubyte");
+		Matrix inputs = trainReaderInputs("MNIST/train-images.idx3-ubyte");
+		Matrix labels = trainReaderLabels("MNIST/train-labels.idx1-ubyte");
+		Matrix test_inputs = testReaderInputs("MNIST/t10k-images.idx3-ubyte");
+		Matrix test_labels = testReaderLabels("MNIST/t10k-labels.idx1-ubyte");
 
 		convertLabelToMatrixArray(labels, &arr_labels);
 		convertLabelToMatrixArray(test_labels, &arr_test_labels);
 
 		network.loadTrainingInputs(inputs);
+		network.loadTestInputs(test_inputs);
+		network.loadDesiredTrainingOutputs(&arr_labels, labels.get_size().rows);
+		network.loadDesiredTestOutputs(&arr_test_labels, test_labels.get_size().rows);
+
+		network.SGD(3.0, 10, 30, true);
 #else
 		
 		network.readNetworkWeightsAndBiases("network_data.txt");
@@ -44,7 +49,7 @@ int main(int argc, char* argv[])
 		};
 
 		network.loadInputs(inputs);
-		cout << "Input: " << endl << inputs << endl << "evaluate: " << network.evaluateNetwork() << endl << endl;
+		cout << "Input: " << endl << inputs << endl << "evaluate: " << network.evaluateNetworkOutput() << endl << endl;
 
 		inputs =
 		{
@@ -53,7 +58,7 @@ int main(int argc, char* argv[])
 		};
 
 		network.loadInputs(inputs);
-		cout << "Input: " << endl << inputs << endl << "evaluate: " << network.evaluateNetwork() << endl << endl;
+		cout << "Input: " << endl << inputs << endl << "evaluate: " << network.evaluateNetworkOutput() << endl << endl;
 
 		inputs =
 		{
@@ -62,7 +67,7 @@ int main(int argc, char* argv[])
 		};
 
 		network.loadInputs(inputs);
-		cout << "Input: " << endl << inputs << endl << "evaluate: " << network.evaluateNetwork() << endl << endl;
+		cout << "Input: " << endl << inputs << endl << "evaluate: " << network.evaluateNetworkOutput() << endl << endl;
 
 		inputs =
 		{
@@ -71,7 +76,7 @@ int main(int argc, char* argv[])
 		};
 
 		network.loadInputs(inputs);
-		cout << "Input: " << endl << inputs << endl << "evaluate: " << network.evaluateNetwork() << endl << endl;
+		cout << "Input: " << endl << inputs << endl << "evaluate: " << network.evaluateNetworkOutput() << endl << endl;
 
 #endif
 

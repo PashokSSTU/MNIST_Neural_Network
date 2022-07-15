@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		Matrix layers = { {784, 15, 10} };
+		Matrix layers = { {784, 100, 10} };
 		Network network(layers);
 
 #if TRAIN
@@ -40,43 +40,7 @@ int main(int argc, char* argv[])
 		network.SGD(3.0, 10, 30, true);
 #else
 		
-		network.readNetworkWeightsAndBiases("network_data.txt");
 
-		Matrix inputs =
-		{
-			{0},
-			{0}
-		};
-
-		network.loadInputs(inputs);
-		cout << "Input: " << endl << inputs << endl << "evaluate: " << network.evaluateNetworkOutput() << endl << endl;
-
-		inputs =
-		{
-			{0},
-			{1}
-		};
-
-		network.loadInputs(inputs);
-		cout << "Input: " << endl << inputs << endl << "evaluate: " << network.evaluateNetworkOutput() << endl << endl;
-
-		inputs =
-		{
-			{1},
-			{0}
-		};
-
-		network.loadInputs(inputs);
-		cout << "Input: " << endl << inputs << endl << "evaluate: " << network.evaluateNetworkOutput() << endl << endl;
-
-		inputs =
-		{
-			{1},
-			{1}
-		};
-
-		network.loadInputs(inputs);
-		cout << "Input: " << endl << inputs << endl << "evaluate: " << network.evaluateNetworkOutput() << endl << endl;
 
 #endif
 

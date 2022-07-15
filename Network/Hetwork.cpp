@@ -446,7 +446,9 @@ void Network::SGD(double eta, int mini_batch_size, int epohs, bool test)
 				}
 			}
 
-			std::cout << "Ep " << ep + 1 << ": " << count << " / " << amounth << std::endl;
+			std::cerr << "Ep " << ep + 1 << ": " << count << " / " << amounth << std::endl;
+			//printf("Ep %d: %d / %d", ep + 1, count, amounth);
+			//setbuf(stdout, NULL);
 		}
 	}
 

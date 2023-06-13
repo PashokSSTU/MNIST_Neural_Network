@@ -27,7 +27,7 @@
     <ClCompile Include="MNISTReader.cpp">
       <Filter>Source Files\MNIST</Filter>
     </ClCompile>
-    <ClCompile Include="Hetwork.cpp">
+    <ClCompile Include="Network.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
